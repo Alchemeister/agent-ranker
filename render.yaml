@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: agent-ranker
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/mock_data.py && python src/ranking.py && uvicorn src.api:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12
