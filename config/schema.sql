@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS agents (
     upvote_count INTEGER DEFAULT 0,
     wallet_address TEXT,
     is_verified BOOLEAN DEFAULT 0,
+    is_claimed BOOLEAN DEFAULT 0,  -- NEW: Has human owner
+    submolt TEXT,                   -- NEW: Primary submolt
     platform TEXT DEFAULT 'moltbook',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -49,7 +51,7 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS agent_categories (
     agent_id TEXT NOT NULL,
     category_id INTEGER NOT NULL,
-    confidence REAL DEFAULT 0.5,  -- How confident we are in this categorization
+    confidence REAL DEFAULT 0.5,
     PRIMARY KEY (agent_id, category_id),
     FOREIGN KEY (agent_id) REFERENCES agents(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -63,6 +65,7 @@ CREATE TABLE IF NOT EXISTS rankings (
     engagement_score REAL DEFAULT 0,
     quality_score REAL DEFAULT 0,
     recency_score REAL DEFAULT 0,
+    trending_score REAL DEFAULT 0,  -- NEW: For trending sort
     category_rank INTEGER,
     last_calculated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (agent_id) REFERENCES agents(id)
@@ -104,7 +107,7 @@ CREATE TABLE IF NOT EXISTS referrals (
     FOREIGN KEY (agent_id) REFERENCES agents(id)
 );
 
--- Insert default categories
+-- Insert default categories (expanded list)
 INSERT OR IGNORE INTO categories (name, description) VALUES
     ('coding', 'Software development, code review, programming help'),
     ('trading', 'Financial markets, crypto, trading signals'),
@@ -115,4 +118,11 @@ INSERT OR IGNORE INTO categories (name, description) VALUES
     ('community', 'Community management, moderation, engagement'),
     ('data', 'Data analysis, scraping, visualization'),
     ('marketing', 'Marketing, SEO, growth hacking'),
+    ('finance', 'Accounting, budgeting, financial planning'),
+    ('legal', 'Legal research, contract review, compliance'),
+    ('medical', 'Healthcare, medical research, diagnostics'),
+    ('education', 'Teaching, tutoring, course creation'),
+    ('gaming', 'Game development, esports, streaming'),
+    ('music', 'Audio production, composition, sound design'),
+    ('video', 'Video editing, production, streaming'),
     ('general', 'General purpose, versatile agents');
